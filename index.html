@@ -54,12 +54,19 @@
         <span id="grid-progress" class="text-xs text-slate-500 font-bold">0 / 9 Pieces Revealed</span>
       </div>
 
+      <!-- Toggle View Mode Button (Visible when finished) -->
+      <div id="flip-toggle-container" class="hidden mb-3 text-center">
+        <button onclick="toggleGridPhotoView()" id="toggle-photo-btn" class="py-2 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-sm text-xs transition-all duration-200 inline-flex items-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-arrows-rotate"></i> <span>Show My Uploaded Photos</span>
+        </button>
+      </div>
+
       <!-- 3x3 Jigsaw Grid Container -->
       <div class="grid grid-cols-3 gap-2.5 aspect-square w-full max-w-sm mx-auto bg-amber-100/60 p-2 rounded-2xl border-2 border-amber-200/80 shadow-inner">
         
         <!-- Grid Items (9 Tiles) -->
         <!-- Tile 0 -->
-        <div class="perspective-1000 aspect-square cursor-pointer" onclick="openModal(0)">
+        <div class="perspective-1000 aspect-square cursor-pointer" onclick="handleTileClick(0)">
           <div id="tile-card-0" class="w-full h-full relative transform-style-3d transition-transform duration-700 rounded-xl shadow-sm">
             <div class="absolute inset-0 backface-hidden bg-white border-2 border-amber-300 rounded-xl flex flex-col items-center justify-center p-1 text-center hover:bg-amber-50">
               <span class="text-xs font-bold text-amber-900">Clue 10</span>
@@ -70,7 +77,7 @@
         </div>
 
         <!-- Tile 1 -->
-        <div class="perspective-1000 aspect-square cursor-pointer" onclick="openModal(1)">
+        <div class="perspective-1000 aspect-square cursor-pointer" onclick="handleTileClick(1)">
           <div id="tile-card-1" class="w-full h-full relative transform-style-3d transition-transform duration-700 rounded-xl shadow-sm">
             <div class="absolute inset-0 backface-hidden bg-white border-2 border-amber-300 rounded-xl flex flex-col items-center justify-center p-1 text-center hover:bg-amber-50">
               <span class="text-xs font-bold text-amber-900">Clue 11</span>
@@ -81,7 +88,7 @@
         </div>
 
         <!-- Tile 2 -->
-        <div class="perspective-1000 aspect-square cursor-pointer" onclick="openModal(2)">
+        <div class="perspective-1000 aspect-square cursor-pointer" onclick="handleTileClick(2)">
           <div id="tile-card-2" class="w-full h-full relative transform-style-3d transition-transform duration-700 rounded-xl shadow-sm">
             <div class="absolute inset-0 backface-hidden bg-white border-2 border-amber-300 rounded-xl flex flex-col items-center justify-center p-1 text-center hover:bg-amber-50">
               <span class="text-xs font-bold text-amber-900">Clue 12</span>
@@ -92,7 +99,7 @@
         </div>
 
         <!-- Tile 3 -->
-        <div class="perspective-1000 aspect-square cursor-pointer" onclick="openModal(3)">
+        <div class="perspective-1000 aspect-square cursor-pointer" onclick="handleTileClick(3)">
           <div id="tile-card-3" class="w-full h-full relative transform-style-3d transition-transform duration-700 rounded-xl shadow-sm">
             <div class="absolute inset-0 backface-hidden bg-white border-2 border-amber-300 rounded-xl flex flex-col items-center justify-center p-1 text-center hover:bg-amber-50">
               <span class="text-xs font-bold text-amber-900">Clue 13</span>
@@ -103,7 +110,7 @@
         </div>
 
         <!-- Tile 4 -->
-        <div class="perspective-1000 aspect-square cursor-pointer" onclick="openModal(4)">
+        <div class="perspective-1000 aspect-square cursor-pointer" onclick="handleTileClick(4)">
           <div id="tile-card-4" class="w-full h-full relative transform-style-3d transition-transform duration-700 rounded-xl shadow-sm">
             <div class="absolute inset-0 backface-hidden bg-white border-2 border-amber-300 rounded-xl flex flex-col items-center justify-center p-1 text-center hover:bg-amber-50">
               <span class="text-xs font-bold text-amber-900">Clue 14</span>
@@ -114,7 +121,7 @@
         </div>
 
         <!-- Tile 5 -->
-        <div class="perspective-1000 aspect-square cursor-pointer" onclick="openModal(5)">
+        <div class="perspective-1000 aspect-square cursor-pointer" onclick="handleTileClick(5)">
           <div id="tile-card-5" class="w-full h-full relative transform-style-3d transition-transform duration-700 rounded-xl shadow-sm">
             <div class="absolute inset-0 backface-hidden bg-white border-2 border-amber-300 rounded-xl flex flex-col items-center justify-center p-1 text-center hover:bg-amber-50">
               <span class="text-xs font-bold text-amber-900">Clue 15</span>
@@ -125,7 +132,7 @@
         </div>
 
         <!-- Tile 6 -->
-        <div class="perspective-1000 aspect-square cursor-pointer" onclick="openModal(6)">
+        <div class="perspective-1000 aspect-square cursor-pointer" onclick="handleTileClick(6)">
           <div id="tile-card-6" class="w-full h-full relative transform-style-3d transition-transform duration-700 rounded-xl shadow-sm">
             <div class="absolute inset-0 backface-hidden bg-white border-2 border-amber-300 rounded-xl flex flex-col items-center justify-center p-1 text-center hover:bg-amber-50">
               <span class="text-xs font-bold text-amber-900">Clue 16</span>
@@ -136,7 +143,7 @@
         </div>
 
         <!-- Tile 7 -->
-        <div class="perspective-1000 aspect-square cursor-pointer" onclick="openModal(7)">
+        <div class="perspective-1000 aspect-square cursor-pointer" onclick="handleTileClick(7)">
           <div id="tile-card-7" class="w-full h-full relative transform-style-3d transition-transform duration-700 rounded-xl shadow-sm">
             <div class="absolute inset-0 backface-hidden bg-white border-2 border-amber-300 rounded-xl flex flex-col items-center justify-center p-1 text-center hover:bg-amber-50">
               <span class="text-xs font-bold text-amber-900">Clue 17</span>
@@ -147,7 +154,7 @@
         </div>
 
         <!-- Tile 8 -->
-        <div class="perspective-1000 aspect-square cursor-pointer" onclick="openModal(8)">
+        <div class="perspective-1000 aspect-square cursor-pointer" onclick="handleTileClick(8)">
           <div id="tile-card-8" class="w-full h-full relative transform-style-3d transition-transform duration-700 rounded-xl shadow-sm">
             <div class="absolute inset-0 backface-hidden bg-white border-2 border-amber-300 rounded-xl flex flex-col items-center justify-center p-1 text-center hover:bg-amber-50">
               <span class="text-xs font-bold text-amber-900">Clue 18</span>
@@ -158,7 +165,7 @@
         </div>
 
       </div>
-      <p class="text-xs text-center text-slate-400 mt-3">Tap any unrevealed tile to open and submit its photo clue!</p>
+      <p id="grid-subtext" class="text-xs text-center text-slate-400 mt-3">Tap any unrevealed tile to open and submit its photo clue!</p>
     </div>
 
     <!-- Final Reveal Screen (Hidden initially) -->
@@ -169,13 +176,20 @@
       <h2 class="font-handwriting text-3xl text-slate-800 mb-1">Puzzle Solved, Alice! 🎉</h2>
       <p class="text-xs text-slate-600 mb-4">You've flipped all 9 jigsaw tiles and unlocked our secret destination:</p>
 
-      <div class="bg-orange-50 border-2 border-orange-300 rounded-2xl p-4 mb-5 text-left shadow-md">
+      <div class="bg-orange-50 border-2 border-orange-300 rounded-2xl p-4 mb-4 text-left shadow-md">
         <div class="flex items-center gap-3 text-orange-950 font-bold text-lg mb-1">
           <i class="fa-solid fa-utensils text-orange-600"></i>
           <span>The Square Orange Café</span>
         </div>
         <p class="text-xs text-orange-800 mb-2">St John's St, Keswick</p>
         <p class="text-xs text-slate-700 italic">"Time to relax with coffee, tapas, or a celebratory birthday drink!"</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2 mb-4">
+        <button onclick="showGridWithUserPhotos()" class="w-full py-3 px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-md transition-all duration-200 flex items-center justify-center gap-2 text-xs cursor-pointer">
+          <i class="fa-solid fa-arrows-rotate"></i> Reflip Tiles to View My Photos
+        </button>
       </div>
 
       <button onclick="resetHunt()" class="text-xs text-slate-400 underline hover:text-slate-600">Reset Scavenger Hunt</button>
@@ -272,9 +286,14 @@
       }
     ];
 
+    const restaurantImageUrl = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80";
+
     let completedTiles = [false, false, false, false, false, false, false, false, false];
+    let userPhotos = [null, null, null, null, null, null, null, null, null];
     let selectedTileIndex = null;
     let selectedImage = null;
+    let selectedImageDataUrl = null;
+    let isShowingUserPhotos = false;
 
     window.addEventListener('DOMContentLoaded', () => {
       loadSavedProgress();
@@ -282,23 +301,43 @@
     });
 
     function loadSavedProgress() {
-      const saved = localStorage.getItem('catbells_jigsaw_progress');
-      if (saved !== null) {
-        completedTiles = JSON.parse(saved);
+      const savedProgress = localStorage.getItem('catbells_jigsaw_progress');
+      if (savedProgress !== null) {
+        completedTiles = JSON.parse(savedProgress);
+      }
+      const savedPhotos = localStorage.getItem('catbells_jigsaw_photos');
+      if (savedPhotos !== null) {
+        userPhotos = JSON.parse(savedPhotos);
       }
     }
 
     function saveProgress() {
       localStorage.setItem('catbells_jigsaw_progress', JSON.stringify(completedTiles));
+      localStorage.setItem('catbells_jigsaw_photos', JSON.stringify(userPhotos));
     }
 
     function updateGridUI() {
       let count = 0;
       completedTiles.forEach((isDone, idx) => {
         const tileCard = document.getElementById(`tile-card-${idx}`);
+        const tileBack = document.getElementById(`tile-back-${idx}`);
+
         if (isDone) {
           tileCard.classList.add('rotate-y-180');
           count++;
+          
+          if (isShowingUserPhotos && userPhotos[idx]) {
+            // Display uploaded photo full frame
+            tileBack.style.backgroundImage = `url('${userPhotos[idx]}')`;
+            tileBack.style.backgroundPosition = 'center';
+            tileBack.style.backgroundSize = 'cover';
+          } else {
+            // Display sliced restaurant image
+            const positions = ['0% 0%', '50% 0%', '100% 0%', '0% 50%', '50% 50%', '100% 50%', '0% 100%', '50% 100%', '100% 100%'];
+            tileBack.style.backgroundImage = `url('${restaurantImageUrl}')`;
+            tileBack.style.backgroundPosition = positions[idx];
+            tileBack.style.backgroundSize = '300% 300%';
+          }
         } else {
           tileCard.classList.remove('rotate-y-180');
         }
@@ -307,18 +346,64 @@
       document.getElementById('grid-progress').innerText = `${count} / 9 Pieces Revealed`;
 
       if (count === 9) {
-        setTimeout(() => {
-          document.getElementById('grid-screen').classList.add('hidden');
-          document.getElementById('final-screen').classList.remove('hidden');
-        }, 1000);
+        document.getElementById('flip-toggle-container').classList.remove('hidden');
+        document.getElementById('grid-subtext').innerText = isShowingUserPhotos 
+          ? "Viewing your submitted photos on the tiles!"
+          : "Tap any tile or use the button above to switch views!";
+      } else {
+        document.getElementById('flip-toggle-container').classList.add('hidden');
+        document.getElementById('grid-subtext').innerText = "Tap any unrevealed tile to open and submit its photo clue!";
       }
     }
 
-    function openModal(index) {
-      if (completedTiles[index]) {
-        alert("You've already unlocked this puzzle piece!");
-        return;
+    function handleTileClick(index) {
+      const allCompleted = completedTiles.every(t => t === true);
+      
+      if (allCompleted) {
+        // Flipping functionality after puzzle completion
+        toggleGridPhotoView();
+      } else {
+        openModal(index);
       }
+    }
+
+    function toggleGridPhotoView() {
+      isShowingUserPhotos = !isShowingUserPhotos;
+      const btn = document.getElementById('toggle-photo-btn');
+      
+      if (isShowingUserPhotos) {
+        btn.innerHTML = `<i class="fa-solid fa-puzzle-piece"></i> <span>Show Restaurant Puzzle</span>`;
+        btn.className = "py-2 px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-sm text-xs transition-all duration-200 inline-flex items-center gap-2 cursor-pointer";
+      } else {
+        btn.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> <span>Show My Uploaded Photos</span>`;
+        btn.className = "py-2 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-sm text-xs transition-all duration-200 inline-flex items-center gap-2 cursor-pointer";
+      }
+
+      // Smooth flip animation effect
+      completedTiles.forEach((_, idx) => {
+        const card = document.getElementById(`tile-card-${idx}`);
+        card.classList.remove('rotate-y-180');
+      });
+
+      setTimeout(() => {
+        updateGridUI();
+      }, 350);
+    }
+
+    function showGridWithUserPhotos() {
+      isShowingUserPhotos = true;
+      document.getElementById('final-screen').classList.add('hidden');
+      document.getElementById('grid-screen').classList.remove('hidden');
+      
+      const btn = document.getElementById('toggle-photo-btn');
+      btn.innerHTML = `<i class="fa-solid fa-puzzle-piece"></i> <span>Show Restaurant Puzzle</span>`;
+      btn.className = "py-2 px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-sm text-xs transition-all duration-200 inline-flex items-center gap-2 cursor-pointer";
+
+      updateGridUI();
+    }
+
+    function openModal(index) {
+      if (completedTiles[index]) return;
 
       selectedTileIndex = index;
       const clue = clues[index];
@@ -342,6 +427,7 @@
 
       const reader = new FileReader();
       reader.onload = function(e) {
+        selectedImageDataUrl = e.target.result;
         selectedImage = new Image();
         selectedImage.src = e.target.result;
         selectedImage.onload = () => {
@@ -359,6 +445,7 @@
 
     function resetPhoto() {
       selectedImage = null;
+      selectedImageDataUrl = null;
       document.getElementById('photo-input').value = "";
       document.getElementById('preview-container').classList.add('hidden');
       document.getElementById('upload-label').classList.remove('hidden');
@@ -380,18 +467,29 @@
         statusMsg.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> Photo accepted! Unlocking puzzle piece...</span>`;
         
         completedTiles[selectedTileIndex] = true;
+        userPhotos[selectedTileIndex] = selectedImageDataUrl;
         saveProgress();
 
         setTimeout(() => {
           closeModal();
           updateGridUI();
+
+          // Check if all tiles are done
+          if (completedTiles.every(t => t === true)) {
+            setTimeout(() => {
+              document.getElementById('grid-screen').classList.add('hidden');
+              document.getElementById('final-screen').classList.remove('hidden');
+            }, 1000);
+          }
         }, 1200);
       }, 1000);
     }
 
     function resetHunt() {
-      if (confirm("Are you sure you want to reset all puzzle pieces?")) {
+      if (confirm("Are you sure you want to reset all puzzle pieces and photos?")) {
         completedTiles = [false, false, false, false, false, false, false, false, false];
+        userPhotos = [null, null, null, null, null, null, null, null, null];
+        isShowingUserPhotos = false;
         saveProgress();
         document.getElementById('final-screen').classList.add('hidden');
         document.getElementById('grid-screen').classList.remove('hidden');
