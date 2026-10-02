@@ -30,6 +30,7 @@
     }
     .backface-hidden {
       backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
     .rotate-y-180 {
       transform: rotateY(180deg);
@@ -239,51 +240,15 @@
 
   <script>
     const clues = [
-      {
-        number: 10,
-        title: "Something Vividly Green",
-        description: "Spot and capture something bright green along the path - a patch of fern, moss, or leaves!"
-      },
-      {
-        number: 11,
-        title: "A Great Panoramic View",
-        description: "Snap a photo looking out across the landscape or over towards Derwentwater."
-      },
-      {
-        number: 12,
-        title: "Natural Rock / Stone",
-        description: "Find a distinctive rock formation, stone marker, or crag along the path."
-      },
-      {
-        number: 13,
-        title: "Water / Derwentwater",
-        description: "Capture the sparkling water below or a distant boat on the lake."
-      },
-      {
-        number: 14,
-        title: "A Trail Marker or Sign",
-        description: "Take a picture of a trail sign, wooden post, cairn, or summit marker!"
-      },
-      {
-        number: 15,
-        title: "A Friendly Four-Legged Walker",
-        description: "Say hi to a dog walking past on the trail, or spot local wildlife/farm animals!"
-      },
-      {
-        number: 16,
-        title: "A Trail Marker or Path",
-        description: "Capture the winding footpath leading us back down toward the village."
-      },
-      {
-        number: 17,
-        title: "Something Orange",
-        description: "Keep your eyes peeled for something bright orange - a jacket, sign, flower, or leaf!"
-      },
-      {
-        number: 18,
-        title: "A Cosy Spot or Building",
-        description: "Snap a photo of a quaint stone building, shopfront, or cafe on our way into town."
-      }
+      { number: 10, title: "Something Vividly Green", description: "Spot and capture something bright green along the path - a patch of fern, moss, or leaves!" },
+      { number: 11, title: "A Great Panoramic View", description: "Snap a photo looking out across the landscape or over towards Derwentwater." },
+      { number: 12, title: "Natural Rock / Stone", description: "Find a distinctive rock formation, stone marker, or crag along the path." },
+      { number: 13, title: "Water / Derwentwater", description: "Capture the sparkling water below or a distant boat on the lake." },
+      { number: 14, title: "A Trail Marker or Sign", description: "Take a picture of a trail sign, wooden post, cairn, or summit marker!" },
+      { number: 15, title: "A Friendly Four-Legged Walker", description: "Say hi to a dog walking past on the trail, or spot local wildlife/farm animals!" },
+      { number: 16, title: "A Trail Marker or Path", description: "Capture the winding footpath leading us back down toward the village." },
+      { number: 17, title: "Something Orange", description: "Keep your eyes peeled for something bright orange - a jacket, sign, flower, or leaf!" },
+      { number: 18, title: "A Cosy Spot or Building", description: "Snap a photo of a quaint stone building, shopfront, or cafe on our way into town." }
     ];
 
     const restaurantImageUrl = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80";
@@ -316,28 +281,29 @@
       localStorage.setItem('catbells_jigsaw_photos', JSON.stringify(userPhotos));
     }
 
+    function updateTileBackImage(idx) {
+      const tileBack = document.getElementById(`tile-back-${idx}`);
+      if (isShowingUserPhotos && userPhotos[idx]) {
+        tileBack.style.backgroundImage = `url('${userPhotos[idx]}')`;
+        tileBack.style.backgroundPosition = 'center';
+        tileBack.style.backgroundSize = 'cover';
+      } else {
+        const positions = ['0% 0%', '50% 0%', '100% 0%', '0% 50%', '50% 50%', '100% 50%', '0% 100%', '50% 100%', '100% 100%'];
+        tileBack.style.backgroundImage = `url('${restaurantImageUrl}')`;
+        tileBack.style.backgroundPosition = positions[idx];
+        tileBack.style.backgroundSize = '300% 300%';
+      }
+    }
+
     function updateGridUI() {
       let count = 0;
       completedTiles.forEach((isDone, idx) => {
         const tileCard = document.getElementById(`tile-card-${idx}`);
-        const tileBack = document.getElementById(`tile-back-${idx}`);
+        updateTileBackImage(idx);
 
         if (isDone) {
           tileCard.classList.add('rotate-y-180');
           count++;
-          
-          if (isShowingUserPhotos && userPhotos[idx]) {
-            // Display uploaded photo full frame
-            tileBack.style.backgroundImage = `url('${userPhotos[idx]}')`;
-            tileBack.style.backgroundPosition = 'center';
-            tileBack.style.backgroundSize = 'cover';
-          } else {
-            // Display sliced restaurant image
-            const positions = ['0% 0%', '50% 0%', '100% 0%', '0% 50%', '50% 50%', '100% 50%', '0% 100%', '50% 100%', '100% 100%'];
-            tileBack.style.backgroundImage = `url('${restaurantImageUrl}')`;
-            tileBack.style.backgroundPosition = positions[idx];
-            tileBack.style.backgroundSize = '300% 300%';
-          }
         } else {
           tileCard.classList.remove('rotate-y-180');
         }
@@ -358,9 +324,7 @@
 
     function handleTileClick(index) {
       const allCompleted = completedTiles.every(t => t === true);
-      
       if (allCompleted) {
-        // Flipping functionality after puzzle completion
         toggleGridPhotoView();
       } else {
         openModal(index);
@@ -379,14 +343,18 @@
         btn.className = "py-2 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-sm text-xs transition-all duration-200 inline-flex items-center gap-2 cursor-pointer";
       }
 
-      // Smooth flip animation effect
+      // Smooth un-flip first, swap background image halfway through animation, then flip back
       completedTiles.forEach((_, idx) => {
         const card = document.getElementById(`tile-card-${idx}`);
         card.classList.remove('rotate-y-180');
       });
 
       setTimeout(() => {
-        updateGridUI();
+        completedTiles.forEach((_, idx) => updateTileBackImage(idx));
+        completedTiles.forEach((_, idx) => {
+          const card = document.getElementById(`tile-card-${idx}`);
+          card.classList.add('rotate-y-180');
+        });
       }, 350);
     }
 
@@ -459,30 +427,49 @@
     function submitPhoto() {
       if (!selectedImage || selectedTileIndex === null) return;
 
+      const targetIndex = selectedTileIndex;
       const statusMsg = document.getElementById('modal-status');
       statusMsg.innerHTML = `<span class="text-amber-600"><i class="fa-solid fa-spinner fa-spin"></i> Scanning photo...</span>`;
 
-      // Simulates scan and unlocks tile automatically
+      // 1. Process submission locally
       setTimeout(() => {
         statusMsg.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> Photo accepted! Unlocking puzzle piece...</span>`;
         
-        completedTiles[selectedTileIndex] = true;
-        userPhotos[selectedTileIndex] = selectedImageDataUrl;
+        completedTiles[targetIndex] = true;
+        userPhotos[targetIndex] = selectedImageDataUrl;
         saveProgress();
 
+        // 2. Pre-set background image on target tile card before sequence starts
+        updateTileBackImage(targetIndex);
+
+        // 3. Close Modal cleanly
         setTimeout(() => {
           closeModal();
-          updateGridUI();
 
-          // Check if all tiles are done
+          // 4. Trigger rotation directly with CSS transition
+          const card = document.getElementById(`tile-card-${targetIndex}`);
+          if (card) {
+            card.classList.add('rotate-y-180');
+          }
+
+          // 5. Update progress counts
+          const count = completedTiles.filter(Boolean).length;
+          document.getElementById('grid-progress').innerText = `${count} / 9 Pieces Revealed`;
+
+          // 6. Check for completed hunt sequence
           if (completedTiles.every(t => t === true)) {
             setTimeout(() => {
-              document.getElementById('grid-screen').classList.add('hidden');
-              document.getElementById('final-screen').classList.remove('hidden');
-            }, 1000);
+              document.getElementById('flip-toggle-container').classList.remove('hidden');
+              document.getElementById('grid-subtext').innerText = "Tap any tile or use the button above to switch views!";
+              
+              setTimeout(() => {
+                document.getElementById('grid-screen').classList.add('hidden');
+                document.getElementById('final-screen').classList.remove('hidden');
+              }, 600);
+            }, 800);
           }
-        }, 1200);
-      }, 1000);
+        }, 600);
+      }, 600);
     }
 
     function resetHunt() {
