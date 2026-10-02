@@ -1,1327 +1,1605 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Alice's Birthday Hunt 🧩</title>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<style>
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
+  <title>Alice's Birthday Hunt 🧩</title>
 
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #f7f3ed;
-    color: #29251f;
-}
+  <script src="https://cdn.tailwindcss.com"></script>
 
-body {
-    overflow-x: hidden;
-}
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-button,
-input {
-    font-family: inherit;
-}
+  <style>
 
-.screen {
-    min-height: 100vh;
-    padding: 24px 18px 40px;
-}
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
 
-.container {
-    width: 100%;
-    max-width: 520px;
-    margin: 0 auto;
-}
-
-/* ---------------- HEADER ---------------- */
-
-.header {
-    text-align: center;
-    margin-bottom: 22px;
-}
-
-.header h1 {
-    font-size: 27px;
-    margin: 0 0 7px;
-    font-weight: 750;
-    letter-spacing: -0.5px;
-}
-
-.header p {
-    margin: 0;
-    color: #777066;
-    font-size: 14px;
-}
-
-/* ---------------- PROGRESS ---------------- */
-
-.progress-wrap {
-    margin: 0 auto 22px;
-}
-
-.progress-text {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    color: #81786d;
-    margin-bottom: 7px;
-}
-
-.progress-bar {
-    height: 7px;
-    background: #e5ded4;
-    border-radius: 99px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    width: 0%;
-    background: #6d8065;
-    border-radius: 99px;
-    transition: width 0.35s ease;
-}
-
-/* ---------------- PUZZLE ---------------- */
-
-.puzzle-wrap {
-    position: relative;
-    width: 100%;
-    max-width: 440px;
-    aspect-ratio: 1 / 1;
-    margin: 0 auto 25px;
-}
-
-.puzzle-grid {
-    width: 100%;
-    height: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 7px;
-    transition:
-        gap 0.9s cubic-bezier(.2,.8,.2,1),
-        padding 0.9s cubic-bezier(.2,.8,.2,1);
-    position: relative;
-    z-index: 2;
-}
-
-.puzzle-grid.assembling {
-    gap: 0;
-}
-
-.puzzle-tile {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    perspective: 1000px;
-    cursor: pointer;
-    border-radius: 13px;
-    overflow: hidden;
-}
-
-.tile-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    transition: transform 0.55s cubic-bezier(.2,.75,.25,1);
-}
-
-.puzzle-tile.flipped .tile-inner {
-    transform: rotateY(180deg);
-}
-
-.tile-face {
-    position: absolute;
-    inset: 0;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    border-radius: 13px;
-    overflow: hidden;
-}
-
-/* FRONT */
-
-.tile-front {
-    background:
-        linear-gradient(145deg, #8c9b82, #65735d);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 12px;
-    box-shadow: 0 3px 12px rgba(0,0,0,.12);
-}
-
-.tile-front span {
-    color: white;
-    font-weight: 700;
-    font-size: 15px;
-    line-height: 1.2;
-    text-shadow: 0 1px 3px rgba(0,0,0,.2);
-}
-
-/* BACK */
-
-.tile-back {
-    transform: rotateY(180deg);
-    background-size: 300% 300%;
-    background-repeat: no-repeat;
-    background-image: url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=90");
-    box-shadow: 0 3px 12px rgba(0,0,0,.14);
-}
-
-/*
-Each tile shows a different section of the restaurant image.
-*/
-
-.pos-0 { background-position: 0% 0%; }
-.pos-1 { background-position: 50% 0%; }
-.pos-2 { background-position: 100% 0%; }
-
-.pos-3 { background-position: 0% 50%; }
-.pos-4 { background-position: 50% 50%; }
-.pos-5 { background-position: 100% 50%; }
-
-.pos-6 { background-position: 0% 100%; }
-.pos-7 { background-position: 50% 100%; }
-.pos-8 { background-position: 100% 100%; }
-
-
-/* ---------------- ASSEMBLED IMAGE ---------------- */
-
-.assembled-image {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 13px;
-    opacity: 0;
-    transform: scale(.985);
-    transition:
-        opacity .8s ease,
-        transform .8s cubic-bezier(.2,.8,.2,1),
-        border-radius .8s ease;
-    z-index: 1;
-}
-
-.assembled-image.visible {
-    opacity: 1;
-    transform: scale(1);
-    border-radius: 0;
-}
-
-.puzzle-grid.finished {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.puzzle-grid.finished + .assembled-image {
-    z-index: 5;
-}
-
-
-/* ---------------- INSTRUCTION ---------------- */
-
-.instruction {
-    text-align: center;
-    font-size: 14px;
-    color: #81786d;
-    line-height: 1.5;
-    min-height: 22px;
-    margin-bottom: 17px;
-}
-
-
-/* ---------------- BUTTONS ---------------- */
-
-.main-button {
-    width: 100%;
-    border: none;
-    border-radius: 13px;
-    background: #29372a;
-    color: white;
-    padding: 15px 18px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 5px 16px rgba(0,0,0,.12);
-    transition: transform .15s ease, opacity .15s ease;
-}
-
-.main-button:active {
-    transform: scale(.98);
-}
-
-.main-button.secondary {
-    background: #e6ded3;
-    color: #443e36;
-    margin-top: 10px;
-}
-
-
-/* ---------------- PHOTO INPUT ---------------- */
-
-.photo-input {
-    display: none;
-}
-
-
-/* ---------------- COMPLETION MESSAGE ---------------- */
-
-.final-container {
-    position: relative;
-    width: 100%;
-    max-width: 520px;
-    margin: 0 auto;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 8px 30px rgba(0,0,0,.18);
-}
-
-.final-container img {
-    display: block;
-    width: 100%;
-    height: auto;
-    min-height: 430px;
-    object-fit: cover;
-}
-
-.final-overlay {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 70px 22px 24px;
-    background: linear-gradient(
-        to top,
-        rgba(0,0,0,.78),
-        rgba(0,0,0,.25),
-        transparent
-    );
-    color: white;
-    text-align: center;
-}
-
-.final-overlay h2 {
-    margin: 0 0 8px;
-    font-size: 23px;
-    line-height: 1.2;
-}
-
-.final-overlay p {
-    margin: 0;
-    font-size: 17px;
-    line-height: 1.45;
-    font-weight: 500;
-}
-
-
-/* ---------------- PHOTOS MODAL ---------------- */
-
-.modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(25,22,18,.72);
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    z-index: 100;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s ease;
-}
-
-.modal.open {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.modal-card {
-    width: 100%;
-    max-width: 540px;
-    max-height: 88vh;
-    overflow-y: auto;
-    background: #f8f5f0;
-    border-radius: 24px 24px 0 0;
-    padding: 22px 18px 30px;
-    transform: translateY(30px);
-    transition: transform .3s ease;
-}
-
-.modal.open .modal-card {
-    transform: translateY(0);
-}
-
-.modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 18px;
-}
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 21px;
-}
-
-.close-button {
-    border: none;
-    background: #e6ded3;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.photo-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-.submitted-photo {
-    background: white;
-    border-radius: 13px;
-    overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0,0,0,.08);
-}
-
-.submitted-photo img {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    display: block;
-}
-
-.submitted-photo-title {
-    padding: 9px 10px 11px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #4d463d;
-}
-
-.empty-photos {
-    text-align: center;
-    color: #81786d;
-    padding: 30px 10px;
-    grid-column: 1 / -1;
-}
-
-
-/* ---------------- HIDDEN STATES ---------------- */
-
-.hidden {
-    display: none !important;
-}
-
-
-/* ---------------- RESPONSIVE ---------------- */
-
-@media (max-width: 380px) {
-
-    .screen {
-        padding-left: 14px;
-        padding-right: 14px;
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .header h1 {
-        font-size: 24px;
+    html {
+      background: #fffbeb;
+      overflow-x: hidden;
     }
 
-    .tile-front span {
-        font-size: 13px;
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: rgba(255,251,235,0.5);
+      color: #1e293b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overscroll-behavior-y: none;
     }
 
-}
-</style>
+    body.modal-open {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+    }
+
+    .font-handwriting {
+      font-family: 'Dancing Script', cursive;
+    }
+
+    /* ================================
+       JIGSAW
+    ================================= */
+
+    .puzzle-container {
+      perspective: 1200px;
+      -webkit-perspective: 1200px;
+    }
+
+    .tile-wrapper {
+      perspective: 1200px;
+      -webkit-perspective: 1200px;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .tile-card {
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+
+      transition:
+        transform 700ms cubic-bezier(0.22, 0.61, 0.36, 1),
+        border-radius 700ms ease,
+        gap 700ms ease;
+
+      will-change: transform;
+      transform-origin: center;
+    }
+
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+    }
+
+    /* ================================
+       FINAL ASSEMBLY
+    ================================= */
+
+    #puzzle-grid {
+      transition:
+        gap 900ms cubic-bezier(0.22, 0.61, 0.36, 1),
+        padding 900ms cubic-bezier(0.22, 0.61, 0.36, 1),
+        transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    #puzzle-grid.assembling {
+      gap: 0 !important;
+      padding: 0 !important;
+      transform: scale(1.015);
+    }
+
+    .puzzle-tile {
+      transition:
+        border-radius 900ms ease,
+        box-shadow 900ms ease;
+    }
+
+    #puzzle-grid.assembling .puzzle-tile {
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+
+    /* ================================
+       FINAL MESSAGE
+    ================================= */
+
+    #final-message {
+      opacity: 0;
+      transform: translateY(25px);
+      transition:
+        opacity 900ms ease,
+        transform 900ms cubic-bezier(0.22,0.61,0.36,1);
+      pointer-events: none;
+    }
+
+    #final-message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ================================
+       SCREEN FADE
+    ================================= */
+
+    .fade-screen {
+      transition:
+        opacity 450ms ease,
+        transform 450ms ease;
+    }
+
+    .fade-screen.fade-out {
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+    }
+
+    /* ================================
+       MODAL
+    ================================= */
+
+    #clue-modal {
+      opacity: 0;
+      visibility: hidden;
+
+      transition:
+        opacity 250ms ease,
+        visibility 250ms ease;
+    }
+
+    #clue-modal.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-box {
+      transform: translateY(12px) scale(0.97);
+
+      transition:
+        transform 250ms ease;
+    }
+
+    #clue-modal.visible .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    button {
+      touch-action: manipulation;
+    }
+
+  </style>
 </head>
+
 
 <body>
 
-<div class="screen" id="mainScreen">
+<div class="min-h-screen flex items-center justify-center p-3">
 
-    <div class="container">
+  <div class="w-full max-w-md bg-white rounded-3xl shadow-xl
+              border border-amber-100 overflow-hidden relative">
 
-        <div class="header">
-            <h1>Alice's Birthday Hunt 🧩</h1>
-            <p>Complete each challenge to reveal the picture.</p>
-        </div>
+    <!-- HEADER -->
 
-        <div class="progress-wrap">
-            <div class="progress-text">
-                <span id="progressText">0 of 9 revealed</span>
-                <span id="progressPercent">0%</span>
-            </div>
+    <div class="bg-emerald-800 text-white p-5 text-center">
 
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </div>
+      <h1 class="font-handwriting text-3xl">
+        Happy Birthday Alice! ❤️
+      </h1>
 
-
-        <div class="puzzle-wrap">
-
-            <div class="puzzle-grid" id="puzzleGrid"></div>
-
-            <img
-                id="assembledImage"
-                class="assembled-image"
-                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=90"
-                alt="Restaurant"
-            >
-
-        </div>
-
-
-        <div class="instruction" id="instruction">
-            Complete the first challenge to begin...
-        </div>
-
-
-        <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            class="photo-input"
-            id="photoInput"
-        >
-
-
-        <button
-            class="main-button"
-            id="viewPhotosButton"
-            type="button"
-        >
-            📸 View My Photos
-        </button>
+      <p class="text-xs uppercase tracking-widest text-emerald-200 mt-1">
+        Complete the Birthday Hunt
+      </p>
 
     </div>
+
+
+    <!-- ======================================
+         PUZZLE SCREEN
+    ======================================= -->
+
+    <div id="puzzle-screen"
+         class="fade-screen p-4">
+
+
+      <div class="flex justify-between items-center mb-3 px-1">
+
+        <span class="text-xs font-bold uppercase tracking-wider
+                     text-amber-800 bg-amber-100 px-3 py-1 rounded-full">
+
+          Falls of Bruar
+
+        </span>
+
+        <span id="progress"
+              class="text-xs text-slate-500 font-bold">
+
+          0 / 9 Pieces Revealed
+
+        </span>
+
+      </div>
+
+
+      <!-- PUZZLE -->
+
+      <div id="puzzle-grid"
+           class="puzzle-container grid grid-cols-3 gap-2.5
+                  aspect-square w-full max-w-sm mx-auto
+                  bg-amber-100/60 p-2 rounded-2xl
+                  border-2 border-amber-200 shadow-inner">
+
+      </div>
+
+
+      <p id="instruction"
+         class="text-xs text-center text-slate-400 mt-3">
+
+        Complete all nine photo clues to reveal the picture...
+
+      </p>
+
+
+      <!-- TAP TO ASSEMBLE -->
+
+      <div id="assemble-hint"
+           class="hidden text-center mt-3">
+
+        <div class="inline-flex items-center gap-2
+                    bg-emerald-50 text-emerald-700
+                    border border-emerald-200
+                    px-4 py-2 rounded-full text-xs font-bold">
+
+          <i class="fa-solid fa-hand-pointer animate-bounce"></i>
+
+          Tap the picture...
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ======================================
+         FINAL IMAGE MESSAGE
+    ======================================= -->
+
+    <div id="final-area"
+         class="hidden p-3">
+
+      <div id="final-image"
+           class="relative overflow-hidden rounded-2xl
+                  shadow-xl aspect-square">
+
+        <!-- Same completed image -->
+        <img
+          src="https://c02.purpledshub.com/uploads/sites/47/2018/06/Falls-of-Bruar-da993ef.jpg?w=1200&webp=1"
+          class="absolute inset-0 w-full h-full object-cover"
+          alt="Falls of Bruar">
+
+        <!-- Dark gradient -->
+        <div class="absolute inset-0
+                    bg-gradient-to-t
+                    from-black/80
+                    via-black/20
+                    to-transparent">
+        </div>
+
+        <!-- MESSAGE -->
+
+        <div id="final-message"
+             class="absolute bottom-0 left-0 right-0
+                    p-6 text-center text-white">
+
+          <div class="text-3xl mb-2">
+            ❤️
+          </div>
+
+          <h2 class="font-handwriting text-3xl leading-tight">
+            You’ve finished the puzzle
+            <br>
+            and the trek!
+          </h2>
+
+          <p class="text-sm mt-3 font-semibold">
+            It’s time to celebrate...
+          </p>
+
+          <p class="text-lg font-bold mt-1">
+            Come on a birthday date with me? 🎂❤️
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </div>
 
 
-<!-- FINAL VIEW -->
+<!-- ======================================
+     CLUE MODAL
+======================================= -->
 
-<div class="screen hidden" id="finalScreen">
+<div id="clue-modal"
+     class="fixed inset-0 z-50
+            bg-slate-900/60 backdrop-blur-sm
+            flex items-center justify-center p-4">
 
-    <div class="container">
-
-        <div class="final-container">
-
-            <img
-                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=90"
-                alt="Restaurant"
-            >
-
-            <div class="final-overlay">
-
-                <h2>You've finished the puzzle and the trek! ❤️</h2>
-
-                <p>
-                    It's time to celebrate...<br>
-                    Come on a birthday date with me? 🎂❤️
-                </p>
-
-            </div>
-
-        </div>
+  <div class="modal-box bg-white w-full max-w-sm
+              rounded-3xl p-5 shadow-2xl relative">
 
 
-        <button
-            class="main-button"
-            id="viewPhotosFinalButton"
-            type="button"
-            style="margin-top:18px;"
-        >
-            📸 View My Photos
-        </button>
+    <button onclick="closeModal()"
+            class="absolute top-4 right-4
+                   text-slate-400 text-lg">
+
+      <i class="fa-solid fa-xmark"></i>
+
+    </button>
+
+
+    <span id="modal-number"
+          class="text-xs font-bold uppercase
+                 tracking-wider bg-amber-100
+                 text-amber-800 px-3 py-1 rounded-full">
+
+      Clue 10
+
+    </span>
+
+
+    <h3 id="modal-title"
+        class="font-bold text-lg text-slate-800 mt-3">
+
+      Something...
+
+    </h3>
+
+
+    <p id="modal-description"
+       class="text-xs text-slate-600 mt-1 mb-4">
+
+      Find something...
+
+    </p>
+
+
+    <!-- PHOTO -->
+
+    <div id="preview-container"
+         class="hidden relative w-full aspect-video
+                rounded-2xl overflow-hidden
+                border-2 border-emerald-500">
+
+      <img id="image-preview"
+           class="w-full h-full object-cover">
+
+      <button onclick="resetPhoto()"
+              class="absolute top-2 right-2
+                     bg-black/60 text-white
+                     rounded-full p-2 text-xs">
+
+        <i class="fa-solid fa-xmark"></i>
+
+        Retake
+
+      </button>
 
     </div>
 
-</div>
+
+    <!-- CAMERA -->
+
+    <label id="upload-label"
+           for="photo-input"
+           class="cursor-pointer flex flex-col
+                  items-center justify-center
+                  w-full h-36
+                  border-2 border-dashed
+                  border-emerald-300
+                  rounded-2xl bg-emerald-50/50">
+
+      <i class="fa-solid fa-camera-retro
+                text-2xl text-emerald-600 mb-2"></i>
+
+      <p class="text-xs font-semibold text-emerald-800">
+        Take Photo
+      </p>
+
+      <p class="text-[10px] text-slate-400">
+        Capture the clue
+      </p>
+
+      <input id="photo-input"
+             type="file"
+             accept="image/*"
+             capture="environment"
+             class="hidden"
+             onchange="handleImage(event)">
+
+    </label>
 
 
-<!-- PHOTO MODAL -->
+    <button id="submit-button"
+            onclick="submitPhoto()"
+            disabled
+            class="w-full mt-3 py-3
+                   bg-slate-300
+                   text-slate-500
+                   font-bold rounded-xl
+                   cursor-not-allowed">
 
-<div class="modal" id="photoModal">
+      <i class="fa-solid fa-camera"></i>
 
-    <div class="modal-card">
+      Submit Photo
 
-        <div class="modal-header">
+    </button>
 
-            <h2>Your Photos 📸</h2>
 
-            <button
-                class="close-button"
-                id="closeModal"
-                type="button"
-            >
-                ×
-            </button>
-
-        </div>
-
-        <div class="photo-list" id="photoList"></div>
+    <div id="status"
+         class="text-center text-xs
+                font-semibold min-h-[20px] mt-3">
 
     </div>
+
+  </div>
 
 </div>
 
 
 <script>
 
-/* =========================================================
-   DATA
-========================================================= */
+
+/* ======================================================
+   FALLS OF BRUAR IMAGE
+====================================================== */
+
+const bruarsImage =
+"https://c02.purpledshub.com/uploads/sites/47/2018/06/Falls-of-Bruar-da993ef.jpg?w=1200&webp=1";
+
+
+/* ======================================================
+   CLUES
+
+   These now correspond to actual features of the
+   Falls of Bruar walk.
+====================================================== */
 
 const clues = [
-    "Something Green",
-    "Railway Bridge",
-    "Rushing Water",
-    "Rocky Gorge",
-    "Natural Arch",
-    "Stone Bridge",
-    "Deep Woodland",
-    "The Falls",
-    "The Way Back"
+
+  {
+    number: 10,
+
+    title: "Find the Woodland",
+    
+    description:
+      "Take a photo of the trees and woodland surrounding the Bruar Water. Look for Scots pine, birch, larch or the green forest floor."
+  },
+
+
+  {
+    number: 11,
+
+    title: "The Railway Bridge",
+
+    description:
+      "Find the railway bridge that the trail passes beneath. Capture the bridge or the path leading underneath it."
+  },
+
+
+  {
+    number: 12,
+
+    title: "Follow the Water",
+
+    description:
+      "Find Bruar Water beside the path. Take a photo showing the rushing river, a pool, or water flowing between the rocks."
+  },
+
+
+  {
+    number: 13,
+
+    title: "The Rock Gorge",
+
+    description:
+      "Find the dramatic rocks surrounding the gorge. Capture a rocky section where the water has carved its way through."
+  },
+
+
+  {
+    number: 14,
+
+    title: "The Natural Arch",
+
+    description:
+      "Look carefully around the lower falls for the natural rock arch. Capture it if you can spot it."
+  },
+
+
+  {
+    number: 15,
+
+    title: "The Lower Bridge",
+
+    description:
+      "Find the stone bridge above the lower falls. Take a photo of the bridge, the gorge, or the waterfall from the viewpoint."
+  },
+
+
+  {
+    number: 16,
+
+    title: "The Upper Bridge",
+
+    description:
+      "Keep climbing until you find the pretty stone upper bridge. Capture the bridge or the view down into the gorge."
+  },
+
+
+  {
+    number: 17,
+
+    title: "The Falls",
+
+    description:
+      "You've made it to the important bit! Take your best photo of the Falls of Bruar — the bigger and more dramatic the better."
+  },
+
+
+  {
+    number: 18,
+
+    title: "The Way Home",
+
+    description:
+      "On the return journey, find something that tells you you're heading back towards the House of Bruar — a path, sign, building or the entrance to the shopping centre."
+  }
+
 ];
 
 
-/* =========================================================
-   RESTAURANT IMAGE
-========================================================= */
+/* ======================================================
+   STATE
+====================================================== */
 
-const restaurantImage =
-    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=90";
+let completed =
+Array(9).fill(false);
+
+let photos =
+Array(9).fill(null);
+
+let selectedIndex =
+null;
+
+let selectedPhoto =
+null;
+
+let locked =
+false;
+
+let assembled =
+false;
 
 
-/* =========================================================
+/* ======================================================
    STORAGE
-========================================================= */
+====================================================== */
 
-const PROGRESS_KEY = "alice_birthday_bruar_progress_v4";
-const PHOTOS_KEY = "alice_birthday_bruar_photos_v4";
+const progressKey =
+"alice_bruar_progress_v3";
+
+const photosKey =
+"alice_bruar_photos_v3";
 
 
-let progress = Number(
-    localStorage.getItem(PROGRESS_KEY) || 0
-);
+function save() {
 
-let submittedPhotos = [];
+  localStorage.setItem(
+    progressKey,
+    JSON.stringify(completed)
+  );
 
-try {
-
-    submittedPhotos =
-        JSON.parse(
-            localStorage.getItem(PHOTOS_KEY) || "[]"
-        );
-
-} catch {
-
-    submittedPhotos = [];
+  localStorage.setItem(
+    photosKey,
+    JSON.stringify(photos)
+  );
 
 }
 
 
-/* =========================================================
-   ELEMENTS
-========================================================= */
+function load() {
 
-const puzzleGrid =
-    document.getElementById("puzzleGrid");
+  try {
 
-const assembledImage =
-    document.getElementById("assembledImage");
+    const savedProgress =
+      localStorage.getItem(progressKey);
 
-const photoInput =
-    document.getElementById("photoInput");
-
-const instruction =
-    document.getElementById("instruction");
-
-const progressText =
-    document.getElementById("progressText");
-
-const progressPercent =
-    document.getElementById("progressPercent");
-
-const progressFill =
-    document.getElementById("progressFill");
-
-const viewPhotosButton =
-    document.getElementById("viewPhotosButton");
-
-const viewPhotosFinalButton =
-    document.getElementById("viewPhotosFinalButton");
-
-const photoModal =
-    document.getElementById("photoModal");
-
-const closeModal =
-    document.getElementById("closeModal");
-
-const photoList =
-    document.getElementById("photoList");
-
-const mainScreen =
-    document.getElementById("mainScreen");
-
-const finalScreen =
-    document.getElementById("finalScreen");
+    const savedPhotos =
+      localStorage.getItem(photosKey);
 
 
-let selectedTile = null;
-let isSubmitting = false;
+    if (savedProgress) {
+
+      const parsed =
+        JSON.parse(savedProgress);
+
+      if (
+        Array.isArray(parsed) &&
+        parsed.length === 9
+      ) {
+
+        completed =
+          parsed.map(Boolean);
+
+      }
+
+    }
 
 
-/* =========================================================
+    if (savedPhotos) {
+
+      const parsed =
+        JSON.parse(savedPhotos);
+
+      if (
+        Array.isArray(parsed) &&
+        parsed.length === 9
+      ) {
+
+        photos =
+          parsed;
+
+      }
+
+    }
+
+  }
+
+  catch(e) {
+
+    console.log(
+      "Fresh puzzle started."
+    );
+
+  }
+
+}
+
+
+/* ======================================================
    BUILD PUZZLE
-========================================================= */
+====================================================== */
 
 function buildPuzzle() {
 
-    puzzleGrid.innerHTML = "";
+  const grid =
+    document.getElementById(
+      "puzzle-grid"
+    );
 
-    for (let i = 0; i < 9; i++) {
+  grid.innerHTML = "";
 
-        const tile = document.createElement("div");
 
-        tile.className = "puzzle-tile";
+  for (
+    let i = 0;
+    i < 9;
+    i++
+  ) {
 
-        if (i < progress) {
-            tile.classList.add("flipped");
+    const wrapper =
+      document.createElement("div");
+
+    wrapper.className =
+      "tile-wrapper aspect-square cursor-pointer";
+
+
+    wrapper.onclick =
+      () => tileClicked(i);
+
+
+    const card =
+      document.createElement("div");
+
+    card.id =
+      `tile-${i}`;
+
+    card.className =
+      "tile-card puzzle-tile w-full h-full relative rounded-xl shadow-sm";
+
+
+    /* FRONT */
+
+    const front =
+      document.createElement("div");
+
+    front.className =
+      "absolute inset-0 backface-hidden bg-white border-2 border-amber-300 rounded-xl flex flex-col items-center justify-center p-1 text-center";
+
+
+    const clueNumber =
+      document.createElement("span");
+
+    clueNumber.className =
+      "text-xs font-bold text-amber-900";
+
+    clueNumber.innerText =
+      `Clue ${clues[i].number}`;
+
+
+    const icon =
+      document.createElement("i");
+
+    const icons = [
+      "fa-tree",
+      "fa-bridge",
+      "fa-water",
+      "fa-mountain",
+      "fa-gem",
+      "fa-archway",
+      "fa-road",
+      "fa-waterfall",
+      "fa-house"
+    ];
+
+    icon.className =
+      `fa-solid ${icons[i]} text-emerald-600 text-lg mt-1`;
+
+
+    front.appendChild(
+      clueNumber
+    );
+
+    front.appendChild(
+      icon
+    );
+
+
+    /* BACK */
+
+    const back =
+      document.createElement("div");
+
+    back.id =
+      `back-${i}`;
+
+    back.className =
+      "absolute inset-0 backface-hidden rotate-y-180 rounded-xl overflow-hidden border-2 border-white bg-cover bg-no-repeat";
+
+
+    back.style.backgroundImage =
+      `url("${bruarsImage}")`;
+
+
+    const positions = [
+
+      "0% 0%",
+      "50% 0%",
+      "100% 0%",
+
+      "0% 50%",
+      "50% 50%",
+      "100% 50%",
+
+      "0% 100%",
+      "50% 100%",
+      "100% 100%"
+
+    ];
+
+
+    back.style.backgroundPosition =
+      positions[i];
+
+    back.style.backgroundSize =
+      "300% 300%";
+
+
+    card.appendChild(front);
+    card.appendChild(back);
+
+    wrapper.appendChild(card);
+
+    grid.appendChild(wrapper);
+
+  }
+
+
+  updatePuzzle();
+
+}
+
+
+/* ======================================================
+   UPDATE PUZZLE
+====================================================== */
+
+function updatePuzzle() {
+
+  let count = 0;
+
+
+  for (
+    let i = 0;
+    i < 9;
+    i++
+  ) {
+
+    const card =
+      document.getElementById(
+        `tile-${i}`
+      );
+
+
+    if (!card) continue;
+
+
+    if (completed[i]) {
+
+      card.classList.add(
+        "rotate-y-180"
+      );
+
+      count++;
+
+    }
+
+    else {
+
+      card.classList.remove(
+        "rotate-y-180"
+      );
+
+    }
+
+  }
+
+
+  document.getElementById(
+    "progress"
+  ).innerText =
+    `${count} / 9 Pieces Revealed`;
+
+
+  if (count === 9) {
+
+    document.getElementById(
+      "instruction"
+    ).innerText =
+      "You've found every piece... now tap the picture.";
+
+    document.getElementById(
+      "assemble-hint"
+    ).classList.remove(
+      "hidden"
+    );
+
+  }
+
+}
+
+
+/* ======================================================
+   TILE CLICK
+====================================================== */
+
+function tileClicked(index) {
+
+  if (locked) return;
+
+
+  /* If puzzle is complete, tapping ANY tile
+     assembles the whole photograph. */
+
+  if (
+    completed.every(Boolean)
+  ) {
+
+    assemblePuzzle();
+
+    return;
+
+  }
+
+
+  if (completed[index]) return;
+
+
+  openModal(index);
+
+}
+
+
+/* ======================================================
+   OPEN MODAL
+====================================================== */
+
+function openModal(index) {
+
+  selectedIndex =
+    index;
+
+  selectedPhoto =
+    null;
+
+
+  const clue =
+    clues[index];
+
+
+  document.getElementById(
+    "modal-number"
+  ).innerText =
+    `Clue ${clue.number}`;
+
+
+  document.getElementById(
+    "modal-title"
+  ).innerText =
+    clue.title;
+
+
+  document.getElementById(
+    "modal-description"
+  ).innerText =
+    clue.description;
+
+
+  resetPhoto();
+
+
+  document.body.classList.add(
+    "modal-open"
+  );
+
+
+  document.getElementById(
+    "clue-modal"
+  ).classList.add(
+    "visible"
+  );
+
+}
+
+
+/* ======================================================
+   CLOSE MODAL
+====================================================== */
+
+function closeModal() {
+
+  document.getElementById(
+    "clue-modal"
+  ).classList.remove(
+    "visible"
+  );
+
+
+  document.body.classList.remove(
+    "modal-open"
+  );
+
+
+  selectedIndex =
+    null;
+
+}
+
+
+/* ======================================================
+   PHOTO
+====================================================== */
+
+function handleImage(event) {
+
+  const file =
+    event.target.files[0];
+
+  if (!file) return;
+
+
+  const reader =
+    new FileReader();
+
+
+  reader.onload =
+    function(e) {
+
+      compressImage(
+        e.target.result,
+        function(image) {
+
+          selectedPhoto =
+            image;
+
+
+          document.getElementById(
+            "image-preview"
+          ).src =
+            image;
+
+
+          document.getElementById(
+            "preview-container"
+          ).classList.remove(
+            "hidden"
+          );
+
+
+          document.getElementById(
+            "upload-label"
+          ).classList.add(
+            "hidden"
+          );
+
+
+          const button =
+            document.getElementById(
+              "submit-button"
+            );
+
+
+          button.disabled =
+            false;
+
+
+          button.className =
+            "w-full mt-3 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl cursor-pointer";
+
         }
 
-        tile.dataset.index = i;
-
-
-        const inner =
-            document.createElement("div");
-
-        inner.className = "tile-inner";
-
-
-        /* FRONT */
-
-        const front =
-            document.createElement("div");
-
-        front.className = "tile-face tile-front";
-
-
-        const title =
-            document.createElement("span");
-
-        title.textContent = clues[i];
-
-        front.appendChild(title);
-
-
-        /* BACK */
-
-        const back =
-            document.createElement("div");
-
-        back.className =
-            "tile-face tile-back pos-" + i;
-
-        back.style.backgroundImage =
-            `url("${restaurantImage}")`;
-
-
-        inner.appendChild(front);
-        inner.appendChild(back);
-
-        tile.appendChild(inner);
-
-        puzzleGrid.appendChild(tile);
-
-
-        tile.addEventListener("click", () => {
-
-            if (isSubmitting) return;
-
-            if (i < progress) return;
-
-            if (i > progress) return;
-
-            if (progress >= 9) return;
-
-            selectedTile = i;
-
-            /*
-             Immediately open the camera/photo picker.
-            */
-
-            photoInput.value = "";
-
-            photoInput.click();
-
-        });
-
-    }
-
-    updateProgress();
-
-}
-
-
-/* =========================================================
-   UPDATE PROGRESS
-========================================================= */
-
-function updateProgress() {
-
-    const percent =
-        Math.round((progress / 9) * 100);
-
-    progressText.textContent =
-        `${progress} of 9 revealed`;
-
-    progressPercent.textContent =
-        `${percent}%`;
-
-    progressFill.style.width =
-        `${percent}%`;
-
-
-    if (progress === 0) {
-
-        instruction.textContent =
-            "Tap the first card and complete the challenge.";
-
-    } else if (progress < 9) {
-
-        instruction.textContent =
-            `Find "${clues[progress]}" and take a photo.`;
-
-    } else {
-
-        instruction.textContent =
-            "You did it! Tap the completed picture ❤️";
-
-    }
-
-
-    localStorage.setItem(
-        PROGRESS_KEY,
-        progress
-    );
-}
-
-
-/* =========================================================
-   PHOTO SELECTION
-========================================================= */
-
-photoInput.addEventListener(
-    "change",
-    handlePhoto
-);
-
-
-function handlePhoto(event) {
-
-    const file =
-        event.target.files[0];
-
-    if (!file) return;
-
-    if (selectedTile === null) return;
-
-    if (isSubmitting) return;
-
-    isSubmitting = true;
-
-
-    const tileIndex =
-        selectedTile;
-
-
-    /*
-       Read the photo immediately.
-    */
-
-    const reader =
-        new FileReader();
-
-
-    reader.onload = function(e) {
-
-        /*
-           Save a compressed version.
-           This keeps localStorage from filling up.
-        */
-
-        compressImage(
-            e.target.result,
-            900,
-            0.72,
-            function(compressedPhoto) {
-
-                submittedPhotos.push({
-
-                    title: clues[tileIndex],
-
-                    image: compressedPhoto,
-
-                    time: Date.now()
-
-                });
-
-
-                localStorage.setItem(
-                    PHOTOS_KEY,
-                    JSON.stringify(submittedPhotos)
-                );
-
-
-                /*
-                   IMPORTANT:
-                   Flip the tile immediately.
-                   No page reload.
-                */
-
-                flipTileImmediately(tileIndex);
-
-
-                /*
-                   Update progress immediately.
-                */
-
-                progress++;
-
-                selectedTile = null;
-
-                isSubmitting = false;
-
-                updateProgress();
-
-
-                if (progress >= 9) {
-
-                    setTimeout(
-                        prepareAssembly,
-                        650
-                    );
-
-                }
-
-            }
-        );
+      );
 
     };
 
 
-    reader.readAsDataURL(file);
+  reader.readAsDataURL(file);
 
 }
 
 
-/* =========================================================
-   IMMEDIATE TILE FLIP
-========================================================= */
-
-function flipTileImmediately(index) {
-
-    const tile =
-        puzzleGrid.children[index];
-
-    if (!tile) return;
-
-
-    /*
-       Force the browser to recognise the
-       class change immediately.
-    */
-
-    requestAnimationFrame(() => {
-
-        tile.classList.add("flipped");
-
-    });
-
-}
-
-
-/* =========================================================
+/* ======================================================
    COMPRESS PHOTOS
-========================================================= */
+====================================================== */
 
 function compressImage(
-    dataUrl,
-    maxSize,
-    quality,
-    callback
+  source,
+  callback
 ) {
 
-    const img =
-        new Image();
+  const image =
+    new Image();
 
 
-    img.onload = function() {
+  image.onload =
+    function() {
 
-        let width =
-            img.width;
-
-        let height =
-            img.height;
+      const max =
+        900;
 
 
-        if (width > height) {
+      let width =
+        image.width;
 
-            if (width > maxSize) {
+      let height =
+        image.height;
 
-                height =
-                    Math.round(
-                        height *
-                        (maxSize / width)
-                    );
 
-                width =
-                    maxSize;
+      if (
+        width > max ||
+        height > max
+      ) {
 
-            }
+        if (
+          width > height
+        ) {
 
-        } else {
+          height =
+            Math.round(
+              height *
+              max /
+              width
+            );
 
-            if (height > maxSize) {
-
-                width =
-                    Math.round(
-                        width *
-                        (maxSize / height)
-                    );
-
-                height =
-                    maxSize;
-
-            }
+          width =
+            max;
 
         }
 
+        else {
 
-        const canvas =
-            document.createElement("canvas");
+          width =
+            Math.round(
+              width *
+              max /
+              height
+            );
 
-        canvas.width =
-            width;
+          height =
+            max;
 
-        canvas.height =
-            height;
+        }
+
+      }
 
 
-        const ctx =
-            canvas.getContext("2d");
-
-        ctx.drawImage(
-            img,
-            0,
-            0,
-            width,
-            height
+      const canvas =
+        document.createElement(
+          "canvas"
         );
 
 
-        callback(
-            canvas.toDataURL(
-                "image/jpeg",
-                quality
-            )
+      canvas.width =
+        width;
+
+      canvas.height =
+        height;
+
+
+      canvas
+        .getContext("2d")
+        .drawImage(
+          image,
+          0,
+          0,
+          width,
+          height
         );
+
+
+      callback(
+        canvas.toDataURL(
+          "image/jpeg",
+          0.78
+        )
+      );
 
     };
 
 
-    img.src =
-        dataUrl;
+  image.src =
+    source;
 
 }
 
 
-/* =========================================================
-   ASSEMBLE PUZZLE
-========================================================= */
+/* ======================================================
+   RESET PHOTO
+====================================================== */
 
-function prepareAssembly() {
+function resetPhoto() {
 
-    instruction.textContent =
-        "You found every piece... tap the picture ❤️";
-
-
-    /*
-       Make the completed puzzle tappable.
-    */
-
-    puzzleGrid.style.cursor =
-        "pointer";
+  selectedPhoto =
+    null;
 
 
-    puzzleGrid.onclick =
+  document.getElementById(
+    "photo-input"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "preview-container"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "upload-label"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  const button =
+    document.getElementById(
+      "submit-button"
+    );
+
+
+  button.disabled =
+    true;
+
+
+  button.className =
+    "w-full mt-3 py-3 bg-slate-300 text-slate-500 font-bold rounded-xl cursor-not-allowed";
+
+
+  document.getElementById(
+    "status"
+  ).innerText =
+    "";
+
+}
+
+
+/* ======================================================
+   SUBMIT
+====================================================== */
+
+function submitPhoto() {
+
+  if (
+    !selectedPhoto ||
+    selectedIndex === null ||
+    locked
+  ) {
+
+    return;
+
+  }
+
+
+  locked =
+    true;
+
+
+  const index =
+    selectedIndex;
+
+
+  document.getElementById(
+    "status"
+  ).innerHTML =
+    `<span class="text-amber-600">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      Checking your photo...
+    </span>`;
+
+
+  setTimeout(
+    function() {
+
+
+      completed[index] =
+        true;
+
+
+      photos[index] =
+        selectedPhoto;
+
+
+      save();
+
+
+      document.getElementById(
+        "status"
+      ).innerHTML =
+        `<span class="text-emerald-600">
+          <i class="fa-solid fa-circle-check"></i>
+          Clue complete!
+        </span>`;
+
+
+      setTimeout(
         function() {
 
-            if (progress < 9) return;
+          closeModal();
 
-            puzzleGrid.onclick = null;
 
-            assemblePuzzle();
+          const card =
+            document.getElementById(
+              `tile-${index}`
+            );
 
-        };
+
+          requestAnimationFrame(
+            function() {
+
+              card.classList.add(
+                "rotate-y-180"
+              );
+
+            }
+          );
+
+
+          setTimeout(
+            function() {
+
+              updatePuzzle();
+
+              locked =
+                false;
+
+
+              /* If this was the final tile,
+                 wait before revealing the
+                 "tap the picture" instruction. */
+
+              if (
+                completed.every(Boolean)
+              ) {
+
+                setTimeout(
+                  function() {
+
+                    document.getElementById(
+                      "assemble-hint"
+                    ).classList.add(
+                      "animate-pulse"
+                    );
+
+                  },
+                  400
+                );
+
+              }
+
+            },
+            750
+          );
+
+
+        },
+        500
+      );
+
+
+    },
+    650
+  );
 
 }
 
 
-/* =========================================================
-   ASSEMBLE
-========================================================= */
+/* ======================================================
+   FINAL PUZZLE ASSEMBLY
+
+   This is the new big reveal.
+====================================================== */
 
 function assemblePuzzle() {
 
-    instruction.textContent =
-        "Putting the pieces together...";
+  if (
+    locked ||
+    assembled
+  ) return;
 
 
-    /*
-       First remove the individual gaps.
-    */
+  if (
+    !completed.every(Boolean)
+  ) return;
 
-    puzzleGrid.classList.add(
+
+  locked =
+    true;
+
+  assembled =
+    true;
+
+
+  document.getElementById(
+    "instruction"
+  ).innerText =
+    "✨";
+
+
+  document.getElementById(
+    "assemble-hint"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  const grid =
+    document.getElementById(
+      "puzzle-grid"
+    );
+
+
+  /*
+    Make sure every tile is completely
+    face-up before the final assembly.
+  */
+
+  for (
+    let i = 0;
+    i < 9;
+    i++
+  ) {
+
+    const card =
+      document.getElementById(
+        `tile-${i}`
+      );
+
+    card.classList.add(
+      "rotate-y-180"
+    );
+
+  }
+
+
+  /*
+    Give the user a moment to look at
+    the completed 3x3 picture.
+  */
+
+  setTimeout(
+    function() {
+
+
+      /*
+        THE MAGIC:
+
+        The gaps disappear.
+        Padding disappears.
+        Corners become square.
+        The image becomes one photograph.
+      */
+
+      grid.classList.add(
         "assembling"
-    );
+      );
 
 
-    /*
-       Give the gaps time to close,
-       then reveal one seamless image.
-    */
+      /*
+        Hide progress/instruction while
+        photograph expands.
+      */
 
-    setTimeout(() => {
-
-        puzzleGrid.classList.add(
-            "finished"
-        );
-
-        assembledImage.classList.add(
-            "visible"
-        );
+      document.getElementById(
+        "progress"
+      ).style.opacity =
+        "0";
 
 
-        setTimeout(() => {
+      /*
+        Wait until the tiles have closed
+        together.
+      */
 
-            /*
-               Keep the assembled image visible
-               briefly before the final message.
-            */
+      setTimeout(
+        function() {
 
-            instruction.textContent =
-                "❤️";
+          revealFinalImage();
 
-            setTimeout(
-                showFinal,
-                900
-            );
+        },
+        950
+      );
 
-        }, 1000);
 
-    }, 850);
+    },
+    900
+  );
 
 }
 
 
-/* =========================================================
-   FINAL SCREEN
-========================================================= */
+/* ======================================================
+   REVEAL FINAL IMAGE
+====================================================== */
 
-function showFinal() {
+function revealFinalImage() {
 
-    mainScreen.classList.add(
+  const puzzle =
+    document.getElementById(
+      "puzzle-screen"
+    );
+
+
+  const finalArea =
+    document.getElementById(
+      "final-area"
+    );
+
+
+  /*
+    Fade puzzle away.
+  */
+
+  puzzle.classList.add(
+    "fade-out"
+  );
+
+
+  setTimeout(
+    function() {
+
+      puzzle.classList.add(
         "hidden"
-    );
+      );
 
-    finalScreen.classList.remove(
+
+      finalArea.classList.remove(
         "hidden"
-    );
-
-}
+      );
 
 
-/* =========================================================
-   PHOTO MODAL
-========================================================= */
+      /*
+        Give the photograph a tiny
+        breathing/zoom effect.
+      */
 
-function openPhotoModal() {
+      finalArea.style.opacity =
+        "0";
 
-    renderPhotos();
-
-    photoModal.classList.add(
-        "open"
-    );
-
-    document.body.style.overflow =
-        "hidden";
-
-}
+      finalArea.style.transform =
+        "scale(0.96)";
 
 
-function closePhotoModal() {
-
-    photoModal.classList.remove(
-        "open"
-    );
-
-    document.body.style.overflow =
-        "";
-
-}
+      finalArea.style.transition =
+        "opacity 700ms ease, transform 900ms cubic-bezier(.22,.61,.36,1)";
 
 
-viewPhotosButton.addEventListener(
-    "click",
-    openPhotoModal
-);
+      requestAnimationFrame(
+        function() {
+
+          requestAnimationFrame(
+            function() {
+
+              finalArea.style.opacity =
+                "1";
+
+              finalArea.style.transform =
+                "scale(1)";
 
 
-viewPhotosFinalButton.addEventListener(
-    "click",
-    openPhotoModal
-);
+              /*
+                Finally reveal the
+                birthday message.
+              */
+
+              setTimeout(
+                function() {
+
+                  document.getElementById(
+                    "final-message"
+                  ).classList.add(
+                    "show"
+                  );
 
 
-closeModal.addEventListener(
-    "click",
-    closePhotoModal
-);
+                  locked =
+                    false;
 
+                },
+                500
+              );
 
-photoModal.addEventListener(
-    "click",
-    function(e) {
-
-        if (e.target === photoModal) {
-
-            closePhotoModal();
+            }
+          );
 
         }
+      );
 
-    }
-);
-
-
-/* =========================================================
-   RENDER SUBMITTED PHOTOS
-========================================================= */
-
-function renderPhotos() {
-
-    photoList.innerHTML = "";
-
-
-    if (submittedPhotos.length === 0) {
-
-        const empty =
-            document.createElement("div");
-
-        empty.className =
-            "empty-photos";
-
-        empty.textContent =
-            "Your photos will appear here 📸";
-
-        photoList.appendChild(
-            empty
-        );
-
-        return;
-
-    }
-
-
-    submittedPhotos.forEach(
-        function(photo) {
-
-            const item =
-                document.createElement("div");
-
-            item.className =
-                "submitted-photo";
-
-
-            const image =
-                document.createElement("img");
-
-            image.src =
-                photo.image;
-
-            image.alt =
-                photo.title;
-
-
-            const title =
-                document.createElement("div");
-
-            title.className =
-                "submitted-photo-title";
-
-            title.textContent =
-                photo.title;
-
-
-            item.appendChild(
-                image
-            );
-
-            item.appendChild(
-                title
-            );
-
-            photoList.appendChild(
-                item
-            );
-
-        }
-    );
+    },
+    450
+  );
 
 }
 
 
-/* =========================================================
+/* ======================================================
    START
-========================================================= */
+====================================================== */
+
+load();
 
 buildPuzzle();
 
-
-/*
-   If she previously completed the hunt,
-   don't automatically show the final screen.
-   Keep the puzzle accessible so her photos
-   remain available.
-*/
-
-if (progress >= 9) {
-
-    instruction.textContent =
-        "You did it! Tap the completed picture ❤️";
-
-    setTimeout(() => {
-
-        prepareAssembly();
-
-    }, 100);
-
-}
 
 </script>
 
