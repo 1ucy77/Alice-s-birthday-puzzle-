@@ -4,11 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
+  <meta name="theme-color" content="#065f46">
   <title>Alice's Birthday Hunt 🧩</title>
 
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Embedded Web App Manifest for Offline PWA Installation -->
+  <link rel="manifest" href='data:application/manifest+json,{"name":"Alice Birthday Hunt","short_name":"Birthday Hunt","start_url":".","display":"standalone","background_color":"#f0fdf4","theme_color":"#065f46"}'>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
@@ -43,10 +48,7 @@
       font-family: 'Dancing Script', cursive;
     }
 
-    /* ================================
-       3D JIGSAW & CARD FLIP
-    ================================= */
-
+    /* 3D PUZZLE GRID & FLIP ANIMATION */
     .puzzle-container {
       perspective: 1200px;
       -webkit-perspective: 1200px;
@@ -111,10 +113,7 @@
       background-repeat: no-repeat;
     }
 
-    /* ================================
-       FINAL ASSEMBLY & TRANSITIONS
-    ================================= */
-
+    /* ASSEMBLY ANIMATION */
     #puzzle-grid {
       transition: gap 800ms cubic-bezier(0.22, 0.61, 0.36, 1),
                   padding 800ms cubic-bezier(0.22, 0.61, 0.36, 1),
@@ -142,10 +141,7 @@
       pointer-events: none;
     }
 
-    /* ================================
-       MODAL STYLING
-    ================================= */
-
+    /* MODALS */
     .custom-modal {
       opacity: 0;
       visibility: hidden;
@@ -194,10 +190,7 @@
     <div id="puzzle-screen" class="fade-screen p-4">
 
       <div class="flex justify-between items-center mb-3 px-1">
-        <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
-          Birthday Quest
-        </span>
-        <button id="view-photos-btn" onclick="openGalleryModal()" class="hidden text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 shadow-sm">
+        <button id="view-photos-btn" onclick="openGalleryModal()" class="text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 shadow-sm">
           <i class="fa-solid fa-images text-emerald-600"></i> See Photos
         </button>
         <span id="progress" class="text-xs text-slate-500 font-bold">
@@ -205,7 +198,7 @@
         </span>
       </div>
 
-      <!-- PUZZLE GRID -->
+      <!-- 3x3 PUZZLE GRID -->
       <div id="puzzle-grid" class="puzzle-container grid grid-cols-3 gap-2.5 aspect-square w-full max-w-sm mx-auto bg-emerald-50/80 p-2 rounded-2xl border-2 border-emerald-200 shadow-inner">
       </div>
 
@@ -226,17 +219,19 @@
     <!-- FINAL REVEAL AREA -->
     <div id="final-area" class="hidden p-3">
       <div id="final-image" class="relative overflow-hidden rounded-2xl shadow-xl aspect-square">
-        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Restaurant Dinner Setting">
+        <!-- Restaurant Image -->
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Restaurant Setting">
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
 
+        <!-- FINAL MESSAGE -->
         <div id="final-message" class="absolute bottom-0 left-0 right-0 p-6 text-center text-white">
-          <div class="text-3xl mb-2">🥂✨</div>
-          <h2 class="font-handwriting text-3xl leading-tight">You’ve unlocked your birthday surprise!</h2>
-          <p class="text-sm mt-2 font-semibold text-emerald-200">Pack your bags and wear something nice...</p>
-          <p class="text-lg font-bold mt-2">Come on a birthday dinner date with me? 🎂❤️</p>
+          <div class="text-3xl mb-2">🍷✨</div>
+          <h2 class="font-handwriting text-3xl leading-tight">You completed the hike and the puzzle!</h2>
+          <p class="text-sm mt-2 font-semibold text-emerald-200">Let’s celebrate...</p>
+          <p class="text-lg font-bold mt-2">Come on a birthday date with me? 🎂❤️</p>
           
           <button onclick="openGalleryModal()" class="mt-4 inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/40 text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-white/30 transition-all">
-            <i class="fa-solid fa-images"></i> View Hunt Photos
+            <i class="fa-solid fa-images"></i> See Photos
           </button>
         </div>
       </div>
@@ -245,7 +240,7 @@
   </div>
 </div>
 
-<!-- CLUE MODAL -->
+<!-- CLUE UPLOAD MODAL -->
 <div id="clue-modal" class="custom-modal fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
   <div class="modal-box bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl relative">
 
@@ -254,18 +249,13 @@
     </button>
 
     <span id="modal-number" class="text-xs font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full">
-      Clue 1
+      Clue 10
     </span>
 
-    <h3 id="modal-title" class="font-bold text-lg text-slate-800 mt-3">
-      Title
-    </h3>
+    <h3 id="modal-title" class="font-bold text-lg text-slate-800 mt-3">Title</h3>
+    <p id="modal-description" class="text-xs text-slate-600 mt-1 mb-4">Description</p>
 
-    <p id="modal-description" class="text-xs text-slate-600 mt-1 mb-4">
-      Description
-    </p>
-
-    <!-- PHOTO PREVIEW -->
+    <!-- PREVIEW -->
     <div id="preview-container" class="hidden relative w-full aspect-video rounded-2xl overflow-hidden border-2 border-emerald-500">
       <img id="image-preview" class="w-full h-full object-cover" alt="Preview">
       <button onclick="resetPhoto()" class="absolute top-2 right-2 bg-black/60 text-white rounded-full px-3 py-1 text-xs">
@@ -296,39 +286,33 @@
       <i class="fa-solid fa-xmark"></i>
     </button>
 
-    <h3 class="font-bold text-lg text-slate-800 mb-1">Your Hunt Gallery 📸</h3>
-    <p class="text-xs text-slate-500 mb-4">The memories captured along your journey.</p>
+    <h3 class="font-bold text-lg text-slate-800 mb-1">Your Submitted Photos 📸</h3>
+    <p class="text-xs text-slate-500 mb-4">Photos taken during your birthday hunt.</p>
 
     <div id="gallery-grid" class="grid grid-cols-3 gap-2 overflow-y-auto pr-1 flex-1">
-      <!-- Dynamically generated photos -->
+      <!-- Photos populated dynamically -->
     </div>
   </div>
 </div>
 
 <script>
-/* ======================================================
-   RESTAURANT REVEAL IMAGE
-====================================================== */
+/* RESTAURANT IMAGE */
 const restaurantImage = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80";
 
-/* ======================================================
-   CLEAR, CONTEXTUAL CLUES & HINTS
-====================================================== */
+/* CLUES NUMBERED 10 - 18 */
 const clues = [
-  { hint: "Green Leaves", title: "Woodland Foliage", description: "Take a photo of green tree leaves or lush forest plants.", icon: "fa-leaf" },
-  { hint: "Metal Tracks", title: "Railway Line", description: "Snap a photo of train tracks or a bridge support.", icon: "fa-train" },
-  { hint: "Flowing Stream", title: "Rushing River", description: "Take a picture of clear moving water or a riverbank.", icon: "fa-water" },
-  { hint: "Gorged Rock", title: "Rock Formation", description: "Capture a photo of dramatic rocks or stone faces.", icon: "fa-mountain" },
-  { hint: "Stone Arch", title: "Natural Archway", description: "Snap a picture of an arched stone structure or curved branch.", icon: "fa-archway" },
-  { hint: "Foot Bridge", title: "Crossing Bridge", description: "Take a photo of a wooden or stone footbridge.", icon: "fa-bridge" },
-  { hint: "Gorge View", title: "High Viewpoint", description: "Capture the view looking down into a valley or gorge.", icon: "fa-compass" },
-  { hint: "Waterfall", title: "Water Cascade", description: "Take a photo of splashing water or a waterfall.", icon: "fa-droplet" },
-  { hint: "Waymark", title: "Trail Marker", description: "Capture a sign, path marker, or building heading home.", icon: "fa-house" }
+  { number: 10, hint: "Something Green", title: "Woodland Plants", description: "Take a photo of green tree leaves or lush grass.", icon: "fa-leaf" },
+  { number: 11, hint: "Metal Track", title: "Railway Line", description: "Snap a photo of train tracks or a bridge structure.", icon: "fa-train" },
+  { number: 12, hint: "Flowing Water", title: "Rushing River", description: "Take a picture of clear water flowing nearby.", icon: "fa-water" },
+  { number: 13, hint: "Solid Rock", title: "Gorged Rock", description: "Capture a photo of dramatic rocks or stone faces.", icon: "fa-mountain" },
+  { number: 14, hint: "Stone Arch", title: "Natural Archway", description: "Snap a picture of an arch or arched branch.", icon: "fa-archway" },
+  { number: 15, hint: "Foot Bridge", title: "Crossing Bridge", description: "Take a photo of a wooden or stone footbridge.", icon: "fa-bridge" },
+  { number: 16, hint: "High View", title: "Gorge Viewpoint", description: "Capture the view looking down from high up.", icon: "fa-compass" },
+  { number: 17, hint: "Waterfall", title: "Water Cascade", description: "Take a photo of splashing water or falls.", icon: "fa-droplet" },
+  { number: 18, hint: "Waymark", title: "Way Home", description: "Capture a path marker or sign heading back.", icon: "fa-house" }
 ];
 
-/* ======================================================
-   STATE & STORAGE
-====================================================== */
+/* STATE */
 let completed = Array(9).fill(false);
 let photos = Array(9).fill(null);
 let selectedIndex = null;
@@ -336,8 +320,8 @@ let selectedPhoto = null;
 let isLocked = false;
 let isAssembled = false;
 
-const progressKey = "alice_bruar_progress_v5";
-const photosKey = "alice_bruar_photos_v5";
+const progressKey = "alice_hunt_progress_offline_v1";
+const photosKey = "alice_hunt_photos_offline_v1";
 
 function save() {
   localStorage.setItem(progressKey, JSON.stringify(completed));
@@ -348,7 +332,6 @@ function load() {
   try {
     const savedProgress = localStorage.getItem(progressKey);
     const savedPhotos = localStorage.getItem(photosKey);
-
     if (savedProgress) {
       const parsed = JSON.parse(savedProgress);
       if (Array.isArray(parsed) && parsed.length === 9) completed = parsed.map(Boolean);
@@ -358,13 +341,11 @@ function load() {
       if (Array.isArray(parsed) && parsed.length === 9) photos = parsed;
     }
   } catch(e) {
-    console.log("Fresh game started.");
+    console.log("Fresh game initiated.");
   }
 }
 
-/* ======================================================
-   BUILD & RENDER PUZZLE
-====================================================== */
+/* PUZZLE GRID BUILDER */
 function buildPuzzle() {
   const grid = document.getElementById("puzzle-grid");
   grid.innerHTML = "";
@@ -384,21 +365,26 @@ function buildPuzzle() {
     card.id = `tile-${i}`;
     card.className = `tile-card ${completed[i] ? 'flipped' : ''}`;
 
-    // Front Face (Clue Hint)
+    // Front (Clue)
     const front = document.createElement("div");
     front.className = "face face-front shadow-sm";
     
+    const numberTag = document.createElement("span");
+    numberTag.className = "text-[10px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded-full mb-0.5";
+    numberTag.innerText = `Clue ${clues[i].number}`;
+
     const icon = document.createElement("i");
-    icon.className = `fa-solid ${clues[i].icon} text-emerald-600 text-lg mb-1`;
+    icon.className = `fa-solid ${clues[i].icon} text-emerald-600 text-sm mb-1`;
     
     const text = document.createElement("span");
-    text.className = "text-[11px] font-bold text-slate-700 tracking-tight leading-tight";
+    text.className = "text-[11px] font-bold text-slate-700 leading-tight";
     text.innerText = clues[i].hint;
 
+    front.appendChild(numberTag);
     front.appendChild(icon);
     front.appendChild(text);
 
-    // Back Face (Image Segment)
+    // Back (Restaurant Image Fragment)
     const back = document.createElement("div");
     back.className = "face face-back shadow-sm";
     back.style.backgroundImage = `url("${restaurantImage}")`;
@@ -417,23 +403,16 @@ function updateProgress() {
   const count = completed.filter(Boolean).length;
   document.getElementById("progress").innerText = `${count} / 9 Clues Revealed`;
 
-  if (count > 0) {
-    document.getElementById("view-photos-btn").classList.remove("hidden");
-  }
-
   if (count === 9) {
-    document.getElementById("instruction").innerText = "You've unlocked all pieces! Tap the picture to assemble...";
+    document.getElementById("instruction").innerText = "You've found every piece... tap the picture to assemble!";
     document.getElementById("assemble-hint").classList.remove("hidden");
   }
 }
 
-/* ======================================================
-   TILE CLICK LOGIC
-====================================================== */
+/* TILE TAP HANDLER */
 function tileClicked(index) {
   if (isLocked) return;
 
-  // REQUIRE TAP TO ASSEMBLE AT THE END
   if (completed.every(Boolean)) {
     assemblePuzzle();
     return;
@@ -443,15 +422,13 @@ function tileClicked(index) {
   openModal(index);
 }
 
-/* ======================================================
-   CLUE MODAL LOGIC
-====================================================== */
+/* CLUE MODAL */
 function openModal(index) {
   selectedIndex = index;
   selectedPhoto = null;
 
   const clue = clues[index];
-  document.getElementById("modal-number").innerText = `Clue ${index + 1}`;
+  document.getElementById("modal-number").innerText = `Clue ${clue.number}`;
   document.getElementById("modal-title").innerText = clue.title;
   document.getElementById("modal-description").innerText = clue.description;
 
@@ -466,9 +443,7 @@ function closeModal() {
   selectedIndex = null;
 }
 
-/* ======================================================
-   GALLERY MODAL
-====================================================== */
+/* GALLERY MODAL */
 function openGalleryModal() {
   const grid = document.getElementById("gallery-grid");
   grid.innerHTML = "";
@@ -481,14 +456,14 @@ function openGalleryModal() {
       item.innerHTML = `
         <img src="${photo}" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity p-1 flex items-end">
-          <span class="text-[9px] text-white font-semibold truncate">${clues[idx].hint}</span>
+          <span class="text-[9px] text-white font-semibold truncate">Clue ${clues[idx].number}</span>
         </div>
       `;
     } else {
       item.innerHTML = `
         <div class="w-full h-full flex flex-col items-center justify-center text-slate-300 p-1 text-center">
           <i class="fa-solid fa-lock text-xs mb-1"></i>
-          <span class="text-[9px]">${clues[idx].hint}</span>
+          <span class="text-[9px]">Clue ${clues[idx].number}</span>
         </div>
       `;
     }
@@ -504,9 +479,7 @@ function closeGalleryModal() {
   document.body.classList.remove("modal-open");
 }
 
-/* ======================================================
-   PHOTO HANDLING & COMPRESSION
-====================================================== */
+/* PHOTO COMPRESSION & SUBMISSION */
 function handleImage(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -562,13 +535,12 @@ function submitPhoto() {
   if (!selectedPhoto || selectedIndex === null || isLocked) return;
 
   const index = selectedIndex;
-  document.getElementById("status").innerHTML = `<span class="text-emerald-600"><i class="fa-solid fa-spinner fa-spin"></i> Saving photo...</span>`;
+  document.getElementById("status").innerHTML = `<span class="text-emerald-600"><i class="fa-solid fa-spinner fa-spin"></i> Saving...</span>`;
 
   completed[index] = true;
   photos[index] = selectedPhoto;
   save();
 
-  // Close modal and execute smooth card flip animation
   setTimeout(() => {
     closeModal();
     const card = document.getElementById(`tile-${index}`);
@@ -581,9 +553,7 @@ function submitPhoto() {
   }, 350);
 }
 
-/* ======================================================
-   FINAL REVEAL ASSEMBLY (TAPPED BY USER)
-====================================================== */
+/* FINAL ASSEMBLY ON TAP */
 function assemblePuzzle() {
   if (isLocked || isAssembled) return;
   isLocked = true;
@@ -596,10 +566,8 @@ function assemblePuzzle() {
   document.getElementById("assemble-hint").classList.add("hidden");
   document.getElementById("instruction").innerText = "✨";
 
-  // 1. Close gaps across grid tiles
   grid.classList.add("assembling");
 
-  // 2. Transition screens smoothly after grid assembly animation completes
   setTimeout(() => {
     puzzleScreen.classList.add("fade-out");
 
@@ -616,9 +584,26 @@ function assemblePuzzle() {
   }, 850);
 }
 
-/* ======================================================
-   INITIALIZE
-====================================================== */
+/* EMBEDDED OFFLINE SERVICE WORKER REGISTRATION */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    const swCode = `
+      const CACHE_NAME = 'alice-hunt-v1';
+      const URLS = [
+        './',
+        'https://cdn.tailwindcss.com',
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80'
+      ];
+      self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(URLS))));
+      self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
+    `;
+    const blob = new Blob([swCode], { type: 'text/javascript' });
+    navigator.serviceWorker.register(URLBlob = URL.createObjectURL(blob)).catch(() => {});
+  });
+}
+
+/* INITIALIZE */
 load();
 buildPuzzle();
 </script>
