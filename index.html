@@ -68,7 +68,7 @@
       height: 100%;
       transform-style: preserve-3d;
       -webkit-transform-style: preserve-3d;
-      transition: transform 700ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 800ms cubic-bezier(0.34, 1.4, 0.64, 1);
       will-change: transform;
     }
 
@@ -320,8 +320,8 @@ let selectedPhoto = null;
 let isLocked = false;
 let isAssembled = false;
 
-const progressKey = "alice_hunt_progress_offline_v1";
-const photosKey = "alice_hunt_photos_offline_v1";
+const progressKey = "alice_hunt_progress_offline_v2";
+const photosKey = "alice_hunt_photos_offline_v2";
 
 function save() {
   localStorage.setItem(progressKey, JSON.stringify(completed));
@@ -479,7 +479,7 @@ function closeGalleryModal() {
   document.body.classList.remove("modal-open");
 }
 
-/* PHOTO COMPRESSION & SUBMISSION */
+/* PHOTO COMPRESSION & AUTOMATIC SUBMISSION FLIP */
 function handleImage(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -534,23 +534,34 @@ function resetPhoto() {
 function submitPhoto() {
   if (!selectedPhoto || selectedIndex === null || isLocked) return;
 
+  isLocked = true;
   const index = selectedIndex;
-  document.getElementById("status").innerHTML = `<span class="text-emerald-600"><i class="fa-solid fa-spinner fa-spin"></i> Saving...</span>`;
 
+  document.getElementById("status").innerHTML = `
+    <span class="text-emerald-600 flex items-center justify-center gap-1.5">
+      <i class="fa-solid fa-circle-check animate-bounce"></i> Clue Complete!
+    </span>`;
+
+  // 1. Mark tile as finished and save
   completed[index] = true;
   photos[index] = selectedPhoto;
   save();
 
+  // 2. Automatically close the modal after brief confirmation
   setTimeout(() => {
     closeModal();
-    const card = document.getElementById(`tile-${index}`);
-    if (card) {
-      requestAnimationFrame(() => {
+
+    // 3. Pause 300ms, then trigger smooth tile flip
+    setTimeout(() => {
+      const card = document.getElementById(`tile-${index}`);
+      if (card) {
         card.classList.add("flipped");
-      });
-    }
-    updateProgress();
-  }, 350);
+      }
+      updateProgress();
+      isLocked = false;
+    }, 300);
+
+  }, 450);
 }
 
 /* FINAL ASSEMBLY ON TAP */
@@ -588,7 +599,7 @@ function assemblePuzzle() {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     const swCode = `
-      const CACHE_NAME = 'alice-hunt-v1';
+      const CACHE_NAME = 'alice-hunt-v2';
       const URLS = [
         './',
         'https://cdn.tailwindcss.com',
